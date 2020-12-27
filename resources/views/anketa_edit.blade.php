@@ -24,14 +24,13 @@
                 <label id="add__anket-label" for="type">Вік</label>
                 <input id="profil_age" name="age" class="ui input" value="{{$anketa->age}}">
             </div>
+        </div>
 
+        <div class="two fields">
             <div class="field">
                 <label id="add__anket-label" for="type">Телефон</label>
                 <input id="profil_tel" name="tel" class="ui input" placeholder="30508887766" value="{{$anketa->tel}}">
             </div>
-        </div>
-
-        <div class="two fields">
             <div class="field">
                 <label id="add__anket-label" for="type">Спеціальність</label>
                 <select id="type" class="ui fluid dropdown" name="type">
@@ -44,11 +43,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="field">
-                <label id="add__anket-label" for="photo">Фото доктора</label>
-                <input multiple="multiple" name="photos[]" type="file" class="ui input" id="photos"
-                    accept="image/png, image/jpeg" />
-            </div>
+
         </div>
 
 
@@ -67,6 +62,13 @@
                 @endforeach
             </select>
         </div>
+
+
+        <div class="field">
+                <label id="add__anket-label" for="type">Адреса: </label>
+                <input id="address" name="address" class="ui input"
+                maxlength="50" value="{{$anketa->address}}">
+            </div>
 
 
         <div class="two fields">

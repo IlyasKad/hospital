@@ -10,6 +10,9 @@
 
 <h1 id="header__h1" class="container__entry-header">Мої анкети</h1>
 <div id="cards__list" class="ui link cards">
+    @if($anketas->isEmpty())
+    <div class="header"> У вас немає анкет</div>
+    @endif
     @foreach($anketas as $anketa)
     @if($anketa->photo==null)
     @continue;

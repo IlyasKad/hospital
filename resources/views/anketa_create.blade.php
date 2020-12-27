@@ -7,9 +7,17 @@
 @section('content')
 
 <div id="container__add-anket">
-    <h1 id="header__h1" class="container__entry-header">Створення анкети доктора</h1>
+    <h1 id="header__h1" class="container__entry-header">Створення анкети лікаря</h1>
     <form enctype="multipart/form-data" action="" method="post" class="ui form">
         @csrf
+
+
+			<div class="field">
+                <label id="add__anket-label" for="diplom_code">Введіть номер диплому</label>
+                <input id="diplom_code" name="diplom_code" class="ui input" maxlength="50">
+            </div>
+
+
 
         <div class="two fields">
             <div class="field">
@@ -36,7 +44,7 @@
                 </select>
             </div>
             <div class="field">
-                <label id="add__anket-label" for="photo">Фото доктора</label></label>
+                <label id="add__anket-label" for="photo">Фото лікаря</label></label>
                 <input multiple="multiple" name="photos[]" type="file" id="photos" accept="image/png, image/jpeg" />
             </div>
         </div>
