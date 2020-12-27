@@ -68,10 +68,10 @@
         @csrf
 
         <label for="start_date">Дата (від коли):</label>
-        <input type="date" id="date" name="start_date" min="2020-02-01" max="2020-02-31">
+        <input type="date" id="date" name="start_date" min="2020-12-28" max="2021-02-27">
 
         <label id="min__date" for="end_date">Дата (до коли):</label>
-        <input type="date" id="date" name="end_date" min="2020-02-01" max="2020-02-31">
+        <input type="date" id="date" name="end_date" min="2020-12-28" max="2021-02-27">
 
 
         <div id="button__end">

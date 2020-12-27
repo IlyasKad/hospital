@@ -17,16 +17,14 @@ use App\Models\Schedule;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
+
 
 
 use Illuminate\Database\QueryException;
 
 class OrderController extends Controller{
 
-
     // check $calendar->orders   column date change to calendar_dt
-
     public function index(Request $request) {
         // $deleted_orders = Order::withTrashed()->where('user_id', Auth::id())->get();
         return view('orders_index', [
@@ -34,7 +32,6 @@ class OrderController extends Controller{
             'deleted_orders' => Order::onlyTrashed()->where('user_id', Auth::id())->get()
         ]);
     }
-
 
     public function show($id){
         // $order->withTrashed()->first()->anketa->city->name
@@ -51,7 +48,6 @@ class OrderController extends Controller{
             'is_trashed' => $is_trashed
         ]);
     }
-
 
    	public function create($anketa_id, Request $request){
         $anketa = Anketa::find($anketa_id);
@@ -85,11 +81,10 @@ class OrderController extends Controller{
     public function store(Request $request){
 
         // $validator = $request->validate([
-        //    'date' => 'required',
-        //    'timetable' => 'required'
+        //     'from_currency_id' => ['required', 'exists:currencies,id'],
         // ]);
 
-        try {
+        // try {
             $order_data = json_decode($request->order);
             $order = new Order();
             $order->date = $order_data->date;
@@ -101,31 +96,39 @@ class OrderController extends Controller{
             $order->timetable()->associate($timetable);
             $order->save();
             return redirect()->route('home');
-        } catch (QueryException $e) {
-            return view('orders_index', [
-                'orders' => Auth::user()->orders,
-                'message' => "error"
-            ]);
-        } 
-       
-        
+        // } catch (QueryException $e) {
+        //     return redirect()->route('orders.create', $request->anketa_id);
+        // }
     }
 
     public function destroy(Request $request) { // forceDelete
+
         $order = Order::withTrashed()->find($request->order_id);
         $user = $order->user;
-        if(!empty($request->client_come)){
-            $user->cancels += 1;
-            if($user->cancels >= 3){
-                $role_blocked = Role::find(1);
-                $user->role()->associate($role_blocked);
-                foreach ($user->orders as $order) {
-                   $order->forceDelete();
-                }              
+
+        var_dump(Auth::id());
+        var_dump($order->user->id);
+
+        if($order->user->id == Auth::id()){
+            $user->cancels += 5;    // client
+        }else{
+            if(!empty($request->client_come)){
+                $user->cancels += 10;
+            }
+        }
+        $user->save();
+
+        if($user->cancels >= 30){
+            $role_blocked = Role::find(1);
+            $user->role()->associate($role_blocked);
+            foreach ($user->orders as $order) {
+                $order->forceDelete();
             }
             $user->save();
+        }else{
+             $order->forceDelete();
         }
-        $order->forceDelete(); 
+
         if(Auth::user()->role->name == 'owner'){
             return redirect()->route('my_account');
         }
@@ -135,8 +138,6 @@ class OrderController extends Controller{
 
 
     }
-
-
 
 
 }

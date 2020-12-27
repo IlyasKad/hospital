@@ -106,12 +106,12 @@
         </tbody>
     </table>
 
-    <h3 class="container__entry-header">Фото доктора</h3>
+    <h3 class="container__entry-header">Фото лікаря</h3>
     @foreach($anketa->photos as $photo)
     <img id="anketa__image" class="ui large rounded image" src="{{ asset('storage/images/'.$photo->path) }} ">
     @endforeach
 
-    <h1 class="container__entry-header">Графік роботи доктора</h1>
+    <h1 class="container__entry-header">Графік роботи лікаря</h1>
     <table class="ui celled table">
         <thead>
             <tr>
@@ -131,14 +131,16 @@
 
 
     @if(Auth::user()->role->name == 'owner' && $anketa->user->id == Auth::id())
-    @if(!$is_trashed)
+
     <h1 class="container__entry-header">Зайнятий час</h1>
     <table class="ui celled table">
         <thead>
             <tr>
                 <th>№ заказу</th>
                 <th>Інформація про прийом</th>
+                @if(!$is_trashed)
                 <th>Обрати статус пацієнта</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -159,7 +161,7 @@
                         </li>
                     </ul>
                 </td>
-
+                @if(!$is_trashed)
                 <td>
                     <form class="ui form" action="{{route('orders.destroy')}}" method="post">
                         @csrf
@@ -178,12 +180,13 @@
                         </div>
                     </form>
                 </td>
+                @endif
             </tr>
             @endforeach
 
         </tbody>
     </table>
-    @endif
+
     @endif
 
 

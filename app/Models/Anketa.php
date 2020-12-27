@@ -82,7 +82,10 @@ class Anketa extends Model
         return $this->hasMany('App\Models\Schedule');
     }
 
-    
+    public function diplom()
+    {
+        return $this->hasOne('App\Models\Diplom');
+    }
 
 
 }

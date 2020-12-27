@@ -28,18 +28,9 @@
             <div class="field">
                 <label for="role" id="container__entry-label">Статус</label>
                 <select name="role">
-                    <option value="3">Доктор </option>
+                    <option value="3">Лікар</option>
                     <option value="2">Пацієнт</option>
                 </select>
-            </div>
-
-            <div class="inline field">
-                <div class="ui toggle checkbox">
-                    <input type="checkbox" name="public">
-                    <label>
-                        <a href="https://www.privacypolicies.com/our-privacy-policy/">Я погоджуюсь з умовами</a>
-                    </label>
-                </div>
             </div>
 
             <div id="container__entry-button">

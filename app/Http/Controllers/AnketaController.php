@@ -12,19 +12,15 @@ use App\Models\City;
 use App\Models\Timetable;
 use App\Models\Schedule;
 use App\Models\Weekday;
+use App\Models\Diplom;
 
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Input;
 
 class AnketaController extends Controller{
 
     public function allData(Request $request) { // $direction = null means asc
-
-        // for ($i=0; $i < 10; $i++) {
-        //     echo "<br>";
-        // }
         $sort_params = ['price_1h_office' => 'За ціною', 'city_id' => 'За містом'];
         $direction_params = ['asc' => 'За зростанням ', 'desc' => 'За спаданням'];
 
@@ -77,7 +73,7 @@ class AnketaController extends Controller{
             'educations' => Education::all(),
             'params' => $params,
             'sort_params' => $sort_params,
-            'direction_params' => $direction_params,           
+            'direction_params' => $direction_params,
         ]);
     }
 
@@ -92,9 +88,8 @@ class AnketaController extends Controller{
         return view('anketa', [
             'anketa' => $anketa,
             'is_trashed' => $is_trashed
-        ]);    
+        ]);
     }
-
 
     public function createAnketa(){
         return view('anketa_create', [
@@ -106,7 +101,6 @@ class AnketaController extends Controller{
             'all_timeslots'  => Timetable::all_timeslots()
         ]);
     }
-
 
     public function updateAnketa(Request $request,$id){
 
@@ -171,8 +165,12 @@ class AnketaController extends Controller{
     }
 
     public function storeAnketa(Request $request){
-        $anketa = new Anketa();
 
+        $validator = $request->validate([
+            'diplom_code' => ['required','unique:anketas,diplom_code', 'exists:diploms,code'],
+        ]);
+
+        $anketa = new Anketa();
         $anketa->name=$request->input('profil_name');
         $anketa->age=$request->input('age');
         $anketa->about_me=$request->input('about_me');
@@ -181,8 +179,6 @@ class AnketaController extends Controller{
         $anketa->address=$request->input('address');
         $type = Type::find($request->input('type'));
         $anketa->type()->associate($type);
-        $user=Auth::user();
-        $anketa->user()->associate($user);
         $anketa->tel=$request->input('tel');
         $city = City::find($request->input('id_city'));
         $anketa->city()->associate($city);
@@ -191,8 +187,20 @@ class AnketaController extends Controller{
         $experience = Experience::find($request->input('id_experience'));
         $anketa->experience()->associate($experience);
 
+        $user=Auth::user();
+        $anketa->user()->associate($user);
+
+
+        $diplom = Diplom::find($request->diplom_code);
+        $diplom->anketa()->save($anketa);
+
         $anketa->save();
 
+
+
+
+
+        $anketa->metros()->detach();
         $j=0;
         $arr = array();
         foreach ($request->id_metros as $id_metro){
@@ -209,14 +217,10 @@ class AnketaController extends Controller{
             $j++;
         }
 
-       
-         
-
 
         foreach ($request->weekday_times as $weekday_time_json) {
-
-            $weekday_time = json_decode($weekday_time_json); 
-            //var_dump($request->weekday_times);      
+            $weekday_time = json_decode($weekday_time_json);
+            //var_dump($request->weekday_times);
             $schedule = new Schedule();
             $timetable = Timetable::find($weekday_time->timetable_id);
             $weekday = Weekday::find($weekday_time->weekday_id);
@@ -245,10 +249,11 @@ class AnketaController extends Controller{
             $anketa->photo_id=$id_main_photo;
         }
 
+
+
         $anketa->save();
         return redirect()->route('home');
     }
-
 
     public function editAnketa($id){
         return view('anketa_edit', [
@@ -256,7 +261,6 @@ class AnketaController extends Controller{
         ]);
     }
 
-    
     public function destroy(Request $request) {
         $anketa = Anketa::find($request->anketa_id);
         foreach ($anketa->orders as $order) {

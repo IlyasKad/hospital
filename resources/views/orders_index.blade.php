@@ -11,6 +11,13 @@
 <div id="cards__list" class="ui link cards">
 
 
+    @if(!empty($message))
+    <h1>{{$message}}</h1>
+    @endif
+
+
+
+
     @if($orders->isEmpty())
     <div class="header"> У вас немає прийомів </div>
     @endif
@@ -45,9 +52,6 @@
     </a>
     @endforeach
 </div>
-
-
-
 
 
 <h1 class="container__entry-header">Неактивні прийоми </h1>
