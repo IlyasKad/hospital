@@ -7,8 +7,9 @@
 @section('content')
 
 
-<div id="container">
+
     @if(Auth::user())
+    <div id="container">
         <h1 id="header__h1" class="container__entry-header">Доброго дня, {{Auth::user()->name}}</h1>
 
     <div id="search">
@@ -19,19 +20,20 @@
 
         <div class="two fields">
         <div class="field">
-                    <label for="type">Тип</label>
-                    <select id="type" class="ui dropdown" name="type_id">
+                    <label for="type_id">Спеціальність</label>
+                    <select id="type_id" class="ui dropdown" name="type_id">
                         @if(empty($params['type_id']))
-                        <option value="" selected>Не вибрано</option>
+                            <option value="" selected>Не вибрано</option>
                         @else
-                        <option value="">Не вибрано</option>
+                            <option value="">Не вибрано</option>
                         @endif
                         @foreach($types as $type)
-                        @if(!empty($params['type_id']) && $params['type_id']==$type->id)
-                        <option value="{{$type->id}}" selected>{{$type->name}}</option>;
-                        @else
-                        <option value="{{$type->id}}">{{$type->name}}</option>
-                        @endif
+                            @if(!empty($params['type_id']) &&
+                                $params['type_id'] == $type->id)
+                                <option value="{{$type->id}}" selected>{{$type->name}}</option>;
+                            @else
+                                <option value="{{$type->id}}">{{$type->name}}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
@@ -173,7 +175,7 @@
 
 
 
-                <div class="field">
+                <!-- <div class="field">
                     <label for="type_id">Спеціальність</label>
                     <select id="type_id" class="ui dropdown" name="type_id">
                         @if(empty($params['type_id']))
@@ -190,7 +192,7 @@
                             @endif
                         @endforeach
                     </select>
-                </div>
+                </div> -->
 
 
 
@@ -233,11 +235,15 @@
             </a>
         @endforeach
     </div>
-
+    </div>
     @else
-    <img src="{{ asset('storage/images/main_photo.jpg') }}" class="main_photo" alt="salon">
+    {{-- <img src="{{ asset('storage/images/9_10.jpg') }}" class="main_photo" alt="salon"> --}}
+    <!-- <div style="position = relative; "></div> -->
+    <div class="welcome_c">
+    <div class = "welcome_t">Записуйся на прийом з нами!</div>
+    </div>
     @endif
-</div>
+
 
 
 @endsection

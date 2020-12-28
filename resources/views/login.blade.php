@@ -22,9 +22,15 @@
                 <input name="password" placeholder="Пароль" type="password" class="ui input">
             </div>
 
+            <div class="">
+                <div><a href ="{{route('forget')}}">Забули пороль?</a></div>
+            </div>
+
             <div id="container__entry-button">
                 <button type="submit" class="ui primary submit button">Увійти</button>
             </div>
+
+            
         </form>
     </div>
 </div>

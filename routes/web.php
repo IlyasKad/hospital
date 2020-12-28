@@ -22,6 +22,9 @@ Route::post('/login', 'LoginController@authenticate')->name('post_login');
 Route::get('/login','LoginController@show')->name('login');
 Route::get('/logout','LoginController@logout')->name('logout');
 
+Route::get('/forget', 'RegistrationController@forget')->name('forget');
+Route::post('/', 'AnketaController@allData')->name('home');
+
 Route::post('/anketa_create', 'AnketaController@storeAnketa')->name('store')->middleware('auth');
 Route::get('/anketa_create','AnketaController@createAnketa')->name('create')->middleware('auth');
 Route::get('/anketa/{id}','AnketaController@showAnketa')->name('anketa');

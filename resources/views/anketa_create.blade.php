@@ -10,27 +10,31 @@
     <h1 id="header__h1" class="container__entry-header">Створення анкети лікаря</h1>
     <form enctype="multipart/form-data" action="" method="post" class="ui form">
         @csrf
+       
+		<div class="field">
+            <label id="add__anket-label" for="diplom_code">Введіть код диплому: </label>
+            <input id="diplom_code" name="diplom_code" class="ui input" maxlength="50">
+             @error('diplom_code')<label class="alert-danger">{{ $message }}</label>@enderror
+        </div>
 
 
-			<div class="field">
-                <label id="add__anket-label" for="diplom_code">Введіть номер диплому</label>
-                <input id="diplom_code" name="diplom_code" class="ui input" maxlength="50">
-            </div>
 
-
-
-        <div class="two fields">
+        <div class="two fields">            
             <div class="field">
                 <label id="add__anket-label" for="type">ПІБ</label>
                 <input id="profil_name" name="profil_name" class="ui input" maxlength="50">
+                @error('profil_name')<label class="alert-danger">{{ $message }}</label>@enderror
             </div>
+
             <div class="field">
                 <label id="add__anket-label" for="type">Вік</label>
                 <input id="profil_age" name="age" class="ui input">
+                @error('age')<label class="alert-danger">{{ $message }}</label>@enderror
             </div>
             <div class="field">
                 <label id="add__anket-label" for="type">Телефон</label>
-                <input id="profil_tel" name="tel" class="ui input" placeholder="30508887766">
+                <input id="profil_tel" name="tel" class="ui input" placeholder="380508887766">
+                @error('tel')<label class="alert-danger">{{ $message }}</label>@enderror
             </div>
         </div>
 
@@ -46,6 +50,8 @@
             <div class="field">
                 <label id="add__anket-label" for="photo">Фото лікаря</label></label>
                 <input multiple="multiple" name="photos[]" type="file" id="photos" accept="image/png, image/jpeg" />
+                @error('photos')<label class="alert-danger">{{ $message }}</label>@enderror
+                @error('photos.*')<label class="alert-danger">{{ $message }}</label>@enderror
             </div>
         </div>
 
@@ -62,6 +68,7 @@
         <div class="field">
             <label id="add__anket-label" for="address">Адреса</label>
             <input id="address" name="address" class="ui input" placeholder="вулиця Пирогова, 23">
+            @error('address')<label class="alert-danger">{{ $message }}</label>@enderror
         </div>
 
         <div class="two fields">
@@ -113,10 +120,12 @@
     <div class="field">
         <label for="pris">в лікарні</label>
         <input id="pris" class="ui input" name="price_1h_office" maxlength="50">
+        @error('price_1h_office')<label class="alert-danger">{{ $message }}</label>@enderror
     </div>
     <div class="field">
         <label for="pris3">з виїздом до клієнта</label>
         <input id="pris3" name="price_1h_challenge" class="ui input" maxlength="50">
+        @error('price_1h_challenge')<label class="alert-danger">{{ $message }}</label>@enderror
     </div>
 </div>
 
