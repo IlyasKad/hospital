@@ -73,9 +73,13 @@ class AnketaController extends Controller{
             'educations' => Education::all(),
             'params' => $params,
             'sort_params' => $sort_params,
-            'direction_params' => $direction_params,
+            'direction_params' => $direction_params,           
         ]);
     }
+
+
+
+
 
     public function showAnketa($id){
         $anketa = Anketa::withTrashed()->find($id);
@@ -88,8 +92,12 @@ class AnketaController extends Controller{
         return view('anketa', [
             'anketa' => $anketa,
             'is_trashed' => $is_trashed
-        ]);
+        ]);    
     }
+
+
+
+
 
     public function createAnketa(){
         return view('anketa_create', [
@@ -102,29 +110,20 @@ class AnketaController extends Controller{
         ]);
     }
 
+
+
+
+
     public function updateAnketa(Request $request,$id){
-
         $anketa= Anketa::find($id);
-
         $anketa->name=$request->input('profil_name');
-
         $anketa->age=$request->input('age');
-
         $anketa->about_me=$request->input('about_me');
-
         $anketa->price_1h_office=$request->input('price_1h_office');
-
         $anketa->price_1h_challenge=$request->input('price_1h_challenge');
-
-
         $anketa->address=$request->input('address');
-
-
-
         $type = Type::find($request->input('type'));
         $anketa->type()->associate($type);
-
-
         $anketa->tel=$request->input('tel');
         $city = City::find($request->input('id_city'));
         $anketa->city()->associate($city);
@@ -133,44 +132,51 @@ class AnketaController extends Controller{
         $experience = Experience::find($request->input('id_experience'));
         $anketa->experience()->associate($experience);
         $anketa->metros()->detach();
-
-
         $anketa->save();
         foreach ($request->id_metros as $id_metro){
             if($id_metro!=0){
                 $anketa->metros()->attach($id_metro);
             }
         }
-
-
-//        if(!empty($request->photos)){
-//            $i=1;
-//            foreach ($request->photos as $photo) {
-//                $extensionContent = $photo->getClientOriginalExtension();
-//                $photo_db=new Photo();
-//                $photo_db->path=$anketa->id .'_' . $i . '.' . $extensionContent;
-//                $anketa->photos()->save($photo_db);
-//                $photo_db->save();
-//                if($i==1){
-//                    $id_main_photo=$photo_db->id;
-//                }
-//                $path = $photo->storeAs('images', $photo_db->path , 'public');
-//                $i++;
-//            }
-//            $anketa->photo_id=$id_main_photo;
-//        }
-
+        //        if(!empty($request->photos)){
+        //            $i=1;
+        //            foreach ($request->photos as $photo) {
+        //                $extensionContent = $photo->getClientOriginalExtension();
+        //                $photo_db=new Photo();
+        //                $photo_db->path=$anketa->id .'_' . $i . '.' . $extensionContent;
+        //                $anketa->photos()->save($photo_db);
+        //                $photo_db->save();
+        //                if($i==1){
+        //                    $id_main_photo=$photo_db->id;
+        //                }
+        //                $path = $photo->storeAs('images', $photo_db->path , 'public');
+        //                $i++;
+        //            }
+        //            $anketa->photo_id=$id_main_photo;
+        //        }
         $anketa->save();
         return redirect()->route('home');
     }
 
-    public function storeAnketa(Request $request){
 
-        $validator = $request->validate([
-            'diplom_code' => ['required','unique:anketas,diplom_code', 'exists:diploms,code'],
-        ]);
 
-        $anketa = new Anketa();
+
+
+    public function storeAnketa(Request $request){   
+        $validator = $request->validate([            
+            'diplom_code' => ['required', 'exists:diploms,code'],
+            'profil_name' => 'required|min:2|max:50',
+            'age' => 'required|integer|min:0|max:120',
+            'tel' => 'required|regex:/380[0-9]{9}/',
+            'photos' => 'required',
+            'photos.*' => 'required|image|mimetypes:image/jpeg,image/png',
+            'address' => 'required|min:5|max:200',
+            'price_1h_office' => 'required|integer|min:0|max:1000000',
+            'price_1h_challenge' => 'required|integer|min:0|max:1000000',
+        ]);      
+        
+
+        $anketa = new Anketa();          
         $anketa->name=$request->input('profil_name');
         $anketa->age=$request->input('age');
         $anketa->about_me=$request->input('about_me');
@@ -178,28 +184,19 @@ class AnketaController extends Controller{
         $anketa->price_1h_challenge=$request->input('price_1h_challenge');
         $anketa->address=$request->input('address');
         $type = Type::find($request->input('type'));
-        $anketa->type()->associate($type);
+        $anketa->type()->associate($type);   
         $anketa->tel=$request->input('tel');
         $city = City::find($request->input('id_city'));
         $anketa->city()->associate($city);
         $education = Education::find($request->input('id_education'));
         $anketa->education()->associate($education);
         $experience = Experience::find($request->input('id_experience'));
-        $anketa->experience()->associate($experience);
-
+        $anketa->experience()->associate($experience);        
         $user=Auth::user();
-        $anketa->user()->associate($user);
-
-
+        $anketa->user()->associate($user); 
         $diplom = Diplom::find($request->diplom_code);
-        $diplom->anketa()->save($anketa);
-
-        $anketa->save();
-
-
-
-
-
+        $diplom->anketa()->save($anketa);        
+        $anketa->save();  
         $anketa->metros()->detach();
         $j=0;
         $arr = array();
@@ -215,10 +212,8 @@ class AnketaController extends Controller{
                 }
             }
             $j++;
-        }
-
-
-        foreach ($request->weekday_times as $weekday_time_json) {
+        }    
+        foreach ($request->weekday_times as $weekday_time_json) {            
             $weekday_time = json_decode($weekday_time_json);
             //var_dump($request->weekday_times);
             $schedule = new Schedule();
@@ -228,10 +223,7 @@ class AnketaController extends Controller{
             $schedule->timetable()->associate($timetable);
             $schedule->anketa()->associate($anketa);
             $schedule->save();
-        }
-
-
-
+        }             
         if(!empty($request->photos)){
             $i=1;
             foreach ($request->photos as $photo) {
@@ -247,13 +239,15 @@ class AnketaController extends Controller{
                 $i++;
             }
             $anketa->photo_id=$id_main_photo;
-        }
-
-
-
+        }     
         $anketa->save();
         return redirect()->route('home');
     }
+
+
+
+
+
 
     public function editAnketa($id){
         return view('anketa_edit', [
@@ -261,6 +255,10 @@ class AnketaController extends Controller{
         ]);
     }
 
+
+
+
+    
     public function destroy(Request $request) {
         $anketa = Anketa::find($request->anketa_id);
         foreach ($anketa->orders as $order) {
@@ -269,6 +267,10 @@ class AnketaController extends Controller{
         $anketa->delete();
         return redirect()->route('home');
     }
+
+
+
+
 
 
 }
